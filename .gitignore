@@ -1,0 +1,134 @@
+# ==============================
+# Build directories
+# ==============================
+build/
+build-*/
+out/
+bin/
+obj/
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+install_manifest.txt
+Makefile
+CTestTestfile.cmake
+Testing/
+compile_commands.json
+
+# Ninja
+.ninja_deps
+.ninja_log
+build.ninja
+rules.ninja
+
+# ==============================
+# Compiled binaries / libraries
+# ==============================
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.so.*
+*.dll
+*.dylib
+*.exe
+*.out
+
+# Debug / profiling
+*.pdb
+*.ilk
+*.dSYM/
+*.gcda
+*.gcno
+*.gcov
+
+# ==============================
+# IDE / editor files
+# ==============================
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# VS Code
+.vscode/
+
+# CLion / JetBrains
+.idea/
+cmake-build-*/
+
+# Vim
+*.swp
+*.swo
+*~
+
+# ==============================
+# OS-generated files
+# ==============================
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+
+# Linux
+.directory
+
+# ==============================
+# Runtime / simulation output
+# ==============================
+results/
+output/
+outputs/
+logs/
+*.log
+
+# Temporary data
+tmp/
+temp/
+*.tmp
+
+# ==============================
+# Scientific / generated data
+# ==============================
+*.vtk
+*.vti
+*.vtu
+*.pvti
+*.pvd
+*.h5
+*.hdf5
+
+# Uncomment these if generated rather than source data
+# *.csv
+# *.dat
+# *.txt
+
+# ==============================
+# Python helpers, if used later
+# ==============================
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# ==============================
+# Environment / local config
+# ==============================
+.env
+.env.*
+local.cmake
+CMakeUserPresets.json
+
+# ==============================
+# Do NOT ignore Git submodules
+# ==============================
+# qed-submodule/cppqed/

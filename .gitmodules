@@ -1,0 +1,4 @@
+[submodule "qed-submodule/cppqed"]
+	path = qed-submodule/cppqed
+	url = https://github.com/vukics/cppqed.git
+	branch = v3/dev
