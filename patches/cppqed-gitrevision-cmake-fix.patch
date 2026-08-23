@@ -1,0 +1,34 @@
+diff --git a/cmake/GetGitRevisionDescription.cmake b/cmake/GetGitRevisionDescription.cmake
+index 87f691ad..50c523dd 100644
+--- a/cmake/GetGitRevisionDescription.cmake
++++ b/cmake/GetGitRevisionDescription.cmake
+@@ -50,7 +50,7 @@ set(__get_git_revision_description YES)
+ 
+ # We must run the following at "include" time, not at function call time,
+ # to find the path to this module rather than the path to a calling list file
+-get_filename_component(_gitdescmoddir ${CMAKE_CURRENT_LIST_FILE} PATH)
++get_filename_component(_gitdescmoddir "${CMAKE_CURRENT_LIST_FILE}" PATH)
+ 
+ # Function _git_find_closest_git_dir finds the next closest .git directory
+ # that is part of any directory in the path defined by _start_dir.
+@@ -68,7 +68,7 @@ function(_git_find_closest_git_dir _start_dir _git_dir_var)
+     while(NOT EXISTS "${git_dir}")
+         # .git dir not found, search parent directories
+         set(git_previous_parent "${cur_dir}")
+-        get_filename_component(cur_dir ${cur_dir} DIRECTORY)
++        get_filename_component(cur_dir "${cur_dir}" DIRECTORY)
+         if(cur_dir STREQUAL git_previous_parent)
+             # We have reached the root directory, we are not in git
+             set(${_git_dir_var}
+@@ -130,9 +130,8 @@ function(get_git_head_revision _refspecvar _hashvar)
+             string(REGEX REPLACE "gitdir: (.*)$" "\\1" GIT_DIR_RELATIVE
+                                  ${submodule})
+             string(STRIP ${GIT_DIR_RELATIVE} GIT_DIR_RELATIVE)
+-            get_filename_component(SUBMODULE_DIR ${GIT_DIR} PATH)
+-            get_filename_component(GIT_DIR ${SUBMODULE_DIR}/${GIT_DIR_RELATIVE}
+-                                   ABSOLUTE)
++            get_filename_component(SUBMODULE_DIR "${GIT_DIR}" PATH)
++            get_filename_component(GIT_DIR "${SUBMODULE_DIR}/${GIT_DIR_RELATIVE}" ABSOLUTE)
+             set(HEAD_SOURCE_FILE "${GIT_DIR}/HEAD")
+         else()
+             # GIT_DIR/CMAKE_CURRENT_SOURCE_DIR is in a worktree

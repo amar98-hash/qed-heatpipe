@@ -1,32 +1,36 @@
-cmake_minimum_required(VERSION 3.24)
+cmake_minimum_required(VERSION 3.21)
 
-project(light-matter-heatpipe-tube
+project(
+    light_matter_heatpipe_tube
     LANGUAGES CXX
 )
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-find_package(VTK REQUIRED COMPONENTS
-    CommonCore
-    CommonDataModel
-    FiltersCore
-    FiltersGeneral
-    FiltersModeling
-    FiltersSources
-    IOGeometry
+# ------------------------------------------------------------
+# C++QED
+# ------------------------------------------------------------
+
+add_subdirectory(
+    qed-submodule/cppqed
+    cppqed-build
 )
 
-add_executable(domain_model_test
-    src/domain_model.cc
+# ------------------------------------------------------------
+# Smoke test
+# ------------------------------------------------------------
+
+add_executable(
+    cppqed_test
+    tests/cppqed_test.cc
 )
 
-target_link_libraries(domain_model_test
+target_link_libraries(
+    cppqed_test
     PRIVATE
-        ${VTK_LIBRARIES}
-)
-
-vtk_module_autoinit(
-    TARGETS domain_model_test
-    MODULES ${VTK_LIBRARIES}
+        CPPQED::CPPQEDelements
+        CPPQED::CPPQEDcore
+        CPPQED::CPPQEDutils
 )
