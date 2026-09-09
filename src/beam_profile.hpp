@@ -2,6 +2,10 @@
 
 #include <cmath>
 #include <stdexcept>
+#include <array>
+#include <string>
+
+#include "helper.hpp"
 
 namespace laser
 {
@@ -45,6 +49,17 @@ inline constexpr double pi =3.14159265358979323846;
 // For RWA calculations, use fieldEnvelope().
 //
 // ============================================================
+
+struct EFieldMap2D
+{
+    helper::Matrix2D<double> Ex;
+    helper::Matrix2D<double> Ey;
+    helper::Matrix2D<double> Ez;
+
+    std::size_t rows = 0;
+    std::size_t cols = 0;
+};
+
 
 class LaserProfile
 {
@@ -206,8 +221,7 @@ public:
     //
     // ========================================================
 
-    double fieldEnvelope(double r,
-                         double t) const
+    double fieldEnvelope(double r,double t) const
     {
         return peakElectricField()*radialEnvelope(r)*temporalEnvelope(t);
     }
@@ -282,6 +296,213 @@ public:
     {
         const double r =std::sqrt(x * x+y * y);
         return fullField(r,z,t);
+    }
+
+
+    // ========================================================
+    // Linearly polarized electric-field map from measured
+    // beam intensity profile.
+    //
+    // Assumptions:
+    //
+    // 1. Input file contains a NORMALIZED intensity map:
+    //
+    //        I_norm(x,y) = I(x,y) / I_max
+    //
+    //    typically:
+    //
+    //        0 <= I_norm <= 1
+    //
+    // 2. p_.peakIntensity is the actual peak intensity
+    //    of the laser in W/m^2.
+    //
+    // 3. polVector gives the linear polarization direction:
+    //
+    //        {1,0,0} -> x polarized
+    //        {0,1,0} -> y polarized
+    //        {0,0,1} -> z polarized
+    //
+    //    The vector is automatically normalized.
+    //
+    // 4. Temporal pulse envelope is included.
+    //
+    // Result:
+    //
+    //      E(x,y,t)
+    //          = epsilon_hat
+    //            E0
+    //            sqrt(I_norm(x,y))
+    //            f(t)
+    //
+    // ========================================================
+    
+    EFieldMap2D linearlyPolarizedEField(
+        const std::array<double, 3>& polVector,
+        const std::string& intensityMapFile,
+        double t) const
+    {
+        // ----------------------------------------------------
+        // Read measured/normalized intensity map
+        // ----------------------------------------------------
+    
+        const auto I_map =
+            helper::readMatrix2D(
+                intensityMapFile
+            );
+        
+        
+        // ----------------------------------------------------
+        // Normalize polarization vector
+        // ----------------------------------------------------
+        
+        const double polMagnitude =
+            std::sqrt(
+                polVector[0] * polVector[0]
+                +
+                polVector[1] * polVector[1]
+                +
+                polVector[2] * polVector[2]
+            );
+        
+        if (polMagnitude <= 0.0)
+        {
+            throw std::invalid_argument(
+                "Polarization vector cannot be zero."
+            );
+        }
+    
+    
+        const double px =
+            polVector[0] / polMagnitude;
+    
+        const double py =
+            polVector[1] / polMagnitude;
+    
+        const double pz =
+            polVector[2] / polMagnitude;
+    
+    
+        // ----------------------------------------------------
+        // Allocate vector-field maps
+        // ----------------------------------------------------
+    
+        EFieldMap2D field;
+    
+        field.rows =
+            I_map.rows;
+    
+        field.cols =
+            I_map.cols;
+    
+    
+        field.Ex.rows = field.rows;
+        field.Ex.cols = field.cols;
+    
+        field.Ey.rows = field.rows;
+        field.Ey.cols = field.cols;
+    
+        field.Ez.rows = field.rows;
+        field.Ez.cols = field.cols;
+    
+    
+        field.Ex.data.assign(
+            field.rows,
+            std::vector<double>(
+                field.cols,
+                0.0
+            )
+        );
+    
+        field.Ey.data.assign(
+            field.rows,
+            std::vector<double>(
+                field.cols,
+                0.0
+            )
+        );
+    
+        field.Ez.data.assign(
+            field.rows,
+            std::vector<double>(
+                field.cols,
+                0.0
+            )
+        );
+    
+    
+        // ----------------------------------------------------
+        // Peak electric-field amplitude
+        //
+        //      E0 = sqrt(2 Imax / c epsilon0)
+        // ----------------------------------------------------
+    
+        const double E0 =
+            peakElectricField();
+    
+    
+        // ----------------------------------------------------
+        // Temporal field envelope
+        // ----------------------------------------------------
+    
+        const double temporal =
+            temporalEnvelope(t);
+    
+    
+        // ----------------------------------------------------
+        // Convert intensity map -> electric-field map
+        // ----------------------------------------------------
+    
+        for (std::size_t i = 0;
+             i < field.rows;
+             ++i)
+        {
+            for (std::size_t j = 0;
+                 j < field.cols;
+                 ++j)
+            {
+                const double normalizedIntensity =
+                    I_map(i, j);
+            
+            
+                if (normalizedIntensity < 0.0)
+                {
+                    throw std::runtime_error(
+                        "Intensity map contains negative values."
+                    );
+                }
+            
+            
+                // --------------------------------------------
+                // Electric-field amplitude scales as sqrt(I)
+                // --------------------------------------------
+            
+                const double E =
+                    E0
+                    *
+                    std::sqrt(
+                        normalizedIntensity
+                    )
+                    *
+                    temporal;
+                
+                
+                // --------------------------------------------
+                // Apply polarization direction
+                // --------------------------------------------
+                
+                field.Ex(i, j) =
+                    px * E;
+                
+                field.Ey(i, j) =
+                    py * E;
+                
+                field.Ez(i, j) =
+                    pz * E;
+            }
+        }
+    
+    
+        return field;
     }
 
 
