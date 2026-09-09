@@ -9,3 +9,6 @@ This project is roughly designed in three major sections:
 1. Add statistical contribution and couplings from Ar and Alkali number densities.
 
 ## Master Equation.
+
+## Goal
+1. To calculate the spatially resolved density matrix $\rho(\vec{r}, v, t)$.
