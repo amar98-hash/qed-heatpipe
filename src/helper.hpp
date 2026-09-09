@@ -9,6 +9,8 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <fstream>
+#include <iomanip>
 
 namespace helper
 {
@@ -235,6 +237,55 @@ inline void printMatrix2D(
         }
 
         std::cout << '\n';
+    }
+}
+
+
+template <typename T>
+inline void writeVectorField2D(
+    const std::string& filename,
+    const Matrix2D<T>& Fx,
+    const Matrix2D<T>& Fy,
+    const Matrix2D<T>& Fz,
+    int precision = 12)
+{
+    if (Fx.rows != Fy.rows ||
+        Fx.rows != Fz.rows ||
+        Fx.cols != Fy.cols ||
+        Fx.cols != Fz.cols)
+    {
+        throw std::runtime_error(
+            "Vector field matrices must have identical dimensions."
+        );
+    }
+
+    std::ofstream file(filename);
+
+    if (!file)
+    {
+        throw std::runtime_error(
+            "Could not open output file: " + filename
+        );
+    }
+
+    file
+        << std::scientific
+        << std::setprecision(precision);
+
+    file << "# row col Fx Fy Fz\n";
+
+    for (std::size_t i = 0; i < Fx.rows; ++i)
+    {
+        for (std::size_t j = 0; j < Fx.cols; ++j)
+        {
+            file
+                << i << ' '
+                << j << ' '
+                << Fx(i, j) << ' '
+                << Fy(i, j) << ' '
+                << Fz(i, j)
+                << '\n';
+        }
     }
 }
 
