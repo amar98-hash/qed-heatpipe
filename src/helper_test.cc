@@ -42,5 +42,11 @@ int main()
         Efield.Ez
     );
 
+    //reading and validating time series data for the laser pulse envelope
+    const auto timeSeries =
+        helper::readTimeSeries(
+            "data/laser_pulse_envelope.dat"
+        );
+
     return 0;
 }
