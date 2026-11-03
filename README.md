@@ -1,4 +1,4 @@
-# light-matter-heatpipe-tube
+# light-matter-interaction- qed-heatpipe-tube
 This is a C++QED based project. The project is developed to simulate the density matrix evolution of a tube of hot metal vapour in Argon background.
 This is a direct next step after the ASL-based heatpipe simulation developed in another project [add git repo of the heatpipe project later].
 This project is roughly designed in three major sections:
