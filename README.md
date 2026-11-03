@@ -5,7 +5,7 @@ This project is roughly designed in three major sections:
 ## Thermodynamic Equillibrium Tube of Hot Ar gas and Alkali matal vapour.
 1. Cylinder of gases with r and L cylinder radius and length.
 2. Gaussian intensity profile of laser light(s).
-## Lindbaldian of the Qunechers as open-quantum system.
+## Lindbaldian of the Quenchers as open-quantum system.
 1. Add statistical contribution and couplings from Ar and Alkali number densities.
 
 ## Master Equation.
